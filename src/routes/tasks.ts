@@ -9,10 +9,10 @@ export function createTaskRouter(db: Database): Router {
   const taskService = new TaskService(db);
   const syncService = new SyncService(db, taskService);
   // Get all tasks
-  router.get('/', async (req: Request, res: Response) => {
+  router.get('/', async (_: Request, res: Response) => {
     try {
       const tasks = await taskService.getAllTasks();
-      res.json(tasks);
+       res.json(tasks);
     } catch (error) {
       res.status(500).json({ error: 'Failed to fetch tasks' });
     }
@@ -87,7 +87,18 @@ export function createTaskRouter(db: Database): Router {
     // 1. Call taskService.deleteTask()
     // 2. Handle not found case
     // 3. Return success response
-    return res.status(501).json({ error: 'Not implemented' });
+    try {
+    const deleted = await taskService.deleteTask(req.params.id);
+
+    if (!deleted) {
+      return sendErrorResponse(res, req, 404, 'Task not found');
+    }
+
+    return res.status(204).send(); // No content
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    return sendErrorResponse(res, req, 500, 'Failed to delete task');
+  }
   });
 
   return router;

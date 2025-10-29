@@ -127,14 +127,49 @@ async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
     // 3. Update updated_at timestamp
     // 4. Set sync_status to 'pending'
     // 5. Add to sync queue
-    throw new Error('Not implemented');
+    try {
+    const existingTask = await this.db.get(`SELECT * FROM tasks WHERE id = ?`, [id]);
+    if (!existingTask || existingTask.is_deleted) {
+      return false;
+    }
+
+    const now = new Date().toISOString();
+
+    await this.db.run(
+      `UPDATE tasks 
+       SET is_deleted = 1, updated_at = ?, sync_status = 'pending' 
+       WHERE id = ?`,
+      [now, id]
+    );
+
+    // Add delete operation to sync queue
+    await this.db.run(
+      `INSERT INTO sync_queue (operation, task_id, data, retry_count, created_at)
+       VALUES (?, ?, ?, ?, ?)`,
+      ['delete', id, JSON.stringify(existingTask), 0, now]
+    );
+
+    return true;
+  } catch (error) {
+    console.error('Error deleting task:', error);
+    throw new Error('Failed to delete task');
+  }
   }
 
   async getTask(id: string): Promise<Task | null> {
     // TODO: Implement get single task
     // 1. Query database for task by id
     // 2. Return null if not found or is_deleted is true
-    throw new Error('Not implemented');
+    try {
+    const task = await this.db.get(`SELECT * FROM tasks WHERE id = ?`, [id]);
+    if (!task || task.is_deleted) {
+      return null;
+    }
+    return task;
+  } catch (error) {
+    console.error('Error fetching task:', error);
+    throw new Error('Failed to fetch task');
+  }
   }
 
   async getAllTasks(): Promise<Task[]> {
