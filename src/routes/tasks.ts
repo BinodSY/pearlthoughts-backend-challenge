@@ -1,13 +1,13 @@
 import { Router, Request, Response } from 'express';
 import { TaskService } from '../services/taskService';
-import { SyncService } from '../services/syncService';
+// import { SyncService } from '../services/syncService';
 import { Database } from '../db/database';
 import { sendErrorResponse } from '../utils/errorResponse';
 
 export function createTaskRouter(db: Database): Router {
   const router = Router();
   const taskService = new TaskService(db);
-  const syncService = new SyncService(db, taskService);
+  // const syncService = new SyncService(db, taskService);
   // Get all tasks
   router.get('/', async (_: Request, res: Response) => {
     try {

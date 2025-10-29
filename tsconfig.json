@@ -1,25 +1,38 @@
 {
   "compilerOptions": {
+    /* 🔹 Output and module setup */
     "target": "ES2022",
-    "module": "commonjs",
+    "module": "ESNext",
+    "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
     "outDir": "./dist",
     "rootDir": "./src",
+
+    /* 🔹 TypeScript safety options */
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
+
+    /* 🔹 Useful for imports */
     "resolveJsonModule": true,
-    "moduleResolution": "node",
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
+
+    /* 🔹 Code quality */
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "allowSyntheticDefaultImports": true,
+
+    /* 🔹 Decorator support (keep as is) */
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+
+    /* 🔹 Debugging */
     "sourceMap": true,
+
+    /* 🔹 Path alias (unchanged) */
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]

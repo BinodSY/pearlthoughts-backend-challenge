@@ -198,6 +198,14 @@ async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
 
   async getTasksNeedingSync(): Promise<Task[]> {
     // TODO: Get all tasks with sync_status = 'pending' or 'error'
-    throw new Error('Not implemented');
+    try {
+    const tasks = await this.db.all(
+      `SELECT * FROM tasks WHERE sync_status IN ('pending', 'error')`
+    );
+    return tasks;
+  } catch (error) {
+    console.error('Error fetching tasks needing sync:', error);
+    return [];
+  }
   }
 }
