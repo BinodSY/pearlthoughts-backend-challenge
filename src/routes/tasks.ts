@@ -7,7 +7,6 @@ export function createTaskRouter(db: Database): Router {
   const router = Router();
   const taskService = new TaskService(db);
   const syncService = new SyncService(db, taskService);
-
   // Get all tasks
   router.get('/', async (req: Request, res: Response) => {
     try {
@@ -37,7 +36,16 @@ export function createTaskRouter(db: Database): Router {
     // 1. Validate request body
     // 2. Call taskService.createTask()
     // 3. Return created task
-    res.status(501).json({ error: 'Not implemented' });
+    try{
+      const{title, description} = req.body;
+      if(!title){
+        return res.status(400).json({ error: 'Title is required' });
+      }
+      const task = await taskService.createTask({title, description});
+      return res.status(201).json(task);
+    }catch(error){
+      return res.status(501).json({ error: 'Not implemented' });
+    }
   });
 
   // Update task
