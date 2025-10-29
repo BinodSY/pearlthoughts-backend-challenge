@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types';
 import { Database } from '../db/database';
 
+
 export class TaskService {
   constructor(private db: Database) {}
 
@@ -62,15 +63,62 @@ export class TaskService {
   }
 }
 
-  async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
-    // TODO: Implement task update
-    // 1. Check if task exists
-    // 2. Update task in database
-    // 3. Update updated_at timestamp
-    // 4. Set sync_status to 'pending'
-    // 5. Add to sync queue
-    throw new Error('Not implemented');
+async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
+  // TODO: Implement task update
+  // 1. Check if task exists
+  // 2. Update task in database
+  // 3. Update updated_at timestamp
+  // 4. Set sync_status to 'pending'
+  // 5. Add to sync queue
+  try {
+    // 1. Get existing task
+    const existingTask = await this.db.get(`SELECT * FROM tasks WHERE id = ?`, [id]);
+    if (!existingTask || existingTask.is_deleted) {
+      return null;
+    }
+
+    // 2. Merge updates
+    const now = new Date().toISOString();
+    const updatedTask: Task = {
+      ...existingTask,
+      title: updates.title ?? existingTask.title,
+      description: updates.description ?? existingTask.description,
+      completed:
+        typeof updates.completed === 'boolean'
+          ? updates.completed
+          : existingTask.completed,
+      updated_at: now,
+      sync_status: 'pending',
+    };
+
+    // 3. Update task in DB
+    await this.db.run(
+      `UPDATE tasks 
+       SET title = ?, description = ?, completed = ?, updated_at = ?, sync_status = ?
+       WHERE id = ?`,
+      [
+        updatedTask.title,
+        updatedTask.description,
+        updatedTask.completed ? 1 : 0,
+        updatedTask.updated_at,
+        updatedTask.sync_status,
+        id,
+      ]
+    );
+
+    // 4. Add to sync queue
+    await this.db.run(
+      `INSERT INTO sync_queue (operation, task_id, data, retry_count, created_at)
+       VALUES (?, ?, ?, ?, ?)`,
+      ['update', id, JSON.stringify(updatedTask), 0, now]
+    );
+
+    return updatedTask;
+  } catch (error) {
+    console.error('Error updating task:', error);
+    throw new Error('Failed to update task');
   }
+}
 
   async deleteTask(id: string): Promise<boolean> {
     // TODO: Implement soft delete
