@@ -14,6 +14,7 @@ export function createTaskRouter(db: Database): Router {
       const tasks = await taskService.getAllTasks();
        res.json(tasks);
     } catch (error) {
+      console.error('Error fetching tasks:', error);
       res.status(500).json({ error: 'Failed to fetch tasks' });
     }
   });
@@ -27,6 +28,7 @@ export function createTaskRouter(db: Database): Router {
       }
       return res.json(task);
     } catch (error) {
+      console.error('Error fetching task:', error);
        return sendErrorResponse(res, req, 500, 'failed to fetch task');
     }
   });
@@ -45,6 +47,7 @@ export function createTaskRouter(db: Database): Router {
       const task = await taskService.createTask({title, description});
       return res.status(201).json(task);
     }catch(error){
+      console.error('Error creating task:', error);
        return sendErrorResponse(res, req, 500, 'Failed to create task');
     }
   });

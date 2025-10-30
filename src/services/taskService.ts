@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Task } from '../types/index';
 import { Database } from '../db/database';
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 export class TaskService {
   constructor(private db: Database) {}
@@ -191,7 +192,7 @@ async updateTask(id: string, updates: Partial<Task>): Promise<Task | null> {
         last_synced_at: row.last_synced_at ? new Date(row.last_synced_at) : undefined,
       }));
     }catch(error){
-      throw new Error('Not implemented');
+      throw new Error(error instanceof Error ? error.message : 'Failed to fetch tasks');
     }
   }
 

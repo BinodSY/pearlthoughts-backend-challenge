@@ -1,21 +1,20 @@
 import axios from 'axios';
 import { Task, SyncQueueItem, SyncResult, BatchSyncRequest, BatchSyncResponse } from '../types/index';
 import { Database } from '../db/database';
-import { TaskService } from './taskService';
+
 
 export class SyncService {
   private apiUrl: string;
   
   constructor(
     private db: Database,
-    private taskService: TaskService,
     apiUrl: string = process.env.API_BASE_URL || 'http://localhost:3000/api'
   ) {
     this.apiUrl = apiUrl;
   }
 
   async sync(): Promise<SyncResult> {
-    // TODO: Main sync orchestration method
+    // TODO: Main sync orchestration methods
     // 1. Get all items from sync queue
     // 2. Group items by batch (use SYNC_BATCH_SIZE from env)
     // 3. Process each batch
