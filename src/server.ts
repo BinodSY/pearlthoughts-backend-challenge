@@ -1,10 +1,10 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import { Database } from './db/database';
-import { createTaskRouter } from './routes/tasks';
-import { createSyncRouter } from './routes/sync';
-import { errorHandler } from './middleware/errorHandler';
+import { Database } from './db/database.js';
+import { createTaskRouter } from './routes/tasks.js';
+import { createSyncRouter } from './routes/sync.js';
+import { errorHandler } from './middleware/errorHandler.js';
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use('/api/tasks', createTaskRouter(db));
 app.use('/api', createSyncRouter(db));
 
 // Error handling
-app.use(errorHandler);
+app.use(errorHandler); 
 
 // Start server
 async function start() {
