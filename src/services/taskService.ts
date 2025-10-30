@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import { Task } from '../types/index.js';
-import { Database } from '../db/database.js';
+import { Task } from '../types/index';
+import { Database } from '../db/database';
 
 
 export class TaskService {

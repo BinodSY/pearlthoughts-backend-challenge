@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Task, SyncQueueItem, SyncResult, BatchSyncRequest, BatchSyncResponse } from '../types/index.js';
-import { Database } from '../db/database.js';
-import { TaskService } from './taskService.js';
+import { Task, SyncQueueItem, SyncResult, BatchSyncRequest, BatchSyncResponse } from '../types/index';
+import { Database } from '../db/database';
+import { TaskService } from './taskService';
 
 export class SyncService {
   private apiUrl: string;
